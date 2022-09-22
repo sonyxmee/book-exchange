@@ -1,8 +1,8 @@
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
 
-def print_hello(request):
-    return HttpResponse("Hello!")
 
-def print_info(request):
-    return HttpResponse("I create a first branch!")
+@login_required
+def home(request):
+    return render(request, 'shop/home.html')
