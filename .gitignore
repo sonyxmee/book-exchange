@@ -1,1 +1,3 @@
 *.sqlite3
+base.html
+user.html
