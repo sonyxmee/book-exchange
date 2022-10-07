@@ -63,13 +63,13 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     success_message = "Инструкция по изменению пароля были отправлены Вам на почту, " \
                       " если Вы не получили письмо, " \
                       "проверьте папку Спам и корректность введенного адреса почты."
-    success_url = reverse_lazy('shop-home')
+    success_url = reverse_lazy('home')
 
 
 class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
     template_name = 'shop/change_password.html'
     success_message = "Пароль был успешно изменен"
-    success_url = reverse_lazy('shop-home')
+    success_url = reverse_lazy('home')
 
 
 @login_required
@@ -82,7 +82,7 @@ def profile(request):
             user_form.save()
             profile_form.save()
             messages.success(request, 'Профиль был успешно изменен')
-            return redirect(to='shop-profile')
+            return redirect(to='profile')
     else:
         user_form = UpdateUserForm(instance=request.user)
         profile_form = UpdateProfileForm(instance=request.user.profile)
