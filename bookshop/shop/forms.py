@@ -22,7 +22,7 @@ class RegisterForm(UserCreationForm):
                                widget=forms.TextInput(attrs={'placeholder': 'Имя Пользователя',
                                                              'class': 'form-control',
                                                              }))
-    vk_link = forms.EmailField(required=True,
+    vk_link = forms.URLField(required=True,
                                widget=forms.URLInput(attrs={'placeholder': 'VK ссылка',
                                                             'class': 'form-control',
                                                             }))
