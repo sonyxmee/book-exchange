@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 
-from .models import Client
+from .models import Client, Book
 
 
 class RegisterForm(UserCreationForm):
@@ -79,15 +79,24 @@ class UpdateUserForm(forms.ModelForm):
 
 class UpdateProfileForm(forms.ModelForm):
     first_name = forms.CharField(max_length=100,
-                               required=True,
-                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+                                 required=True,
+                                 widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(max_length=100,
-                               required=True,
-                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+                                required=True,
+                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     vk_link = forms.URLField(max_length=100,
-                               required=True,
-                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+                             required=True,
+                             widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = Client
         fields = ['first_name', 'last_name', 'vk_link']
+
+
+class AddBookForm(forms.ModelForm):
+    class Meta:
+        model = Book
+        # fields = '__all__'
+        fields = ['title', 'author', 'genre', 'client']
+        # widgets={}
+

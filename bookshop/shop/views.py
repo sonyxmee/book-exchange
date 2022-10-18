@@ -6,14 +6,29 @@ from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChan
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
+from django.views.generic import CreateView, ListView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm
+from .utils import DataMixin
+from .models import Book
 
 
 @login_required
 def home(request):
     return render(request, 'shop/home.html')
 
+class BookView(DataMixin, ListView):
+    model = Book
+    template_name = 'shop/index.html'
+    context_object_name = 'prod'
+
+    # def get_queryset(self):
+    #     return Product.objects.filter(cost__gte=1500)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Список товаров')
+        return context | c_def
 
 class RegisterView(View):
     form_class = RegisterForm
@@ -96,3 +111,15 @@ def profile(request):
         profile_form = UpdateProfileForm(instance=request.user.profile)
 
     return render(request, 'shop/profile.html', {'user_form': user_form, 'profile_form': profile_form})
+
+
+class AddBook(DataMixin, CreateView):
+    form_class = AddBookForm
+    template_name = 'shop/addBook.html'
+
+    success_url = reverse_lazy('home')
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        c_def = self.get_user_context(title='Добавить книгу')
+        return context | c_def
