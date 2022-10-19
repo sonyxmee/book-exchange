@@ -6,13 +6,51 @@ from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChan
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
+from django.views.generic import CreateView, ListView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm
+from .utils import DataMixin
+from .models import Book, Client
 
 
 @login_required
 def home(request):
     return render(request, 'shop/home.html')
+
+
+class BookView(ListView):  # DataMixin,
+    model = Book
+    template_name = 'shop/listbook.html'
+    context_object_name = 'prod'
+
+    def get_queryset(self):
+        return Book.objects.filter(client__user=self.request.user)
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Список книг'
+        return context
+
+
+class AddBook(CreateView):  # DataMixin,
+    form_class = AddBookForm
+    template_name = 'shop/addBook.html'
+    success_url = reverse_lazy('listbook')
+
+    def form_valid(self, form):
+        # создаем форму, но не отправляем его в БД, пока просто держим в памяти
+        fields = form.save(commit=False)
+        # Через реквест передаем недостающую форму, которая обязательна
+        fields.client = Client.objects.get(user=self.request.user)
+        # Наконец сохраняем в БД
+        # fields.save()
+        return super().form_valid(form)
+
+    #
+    # def get_context_data(self, *, object_list=None, **kwargs):
+    #     context = super().get_context_data(**kwargs)
+    #     c_def = self.get_user_context(title='Добавить книгу')
+    #     return context | c_def
 
 
 class RegisterView(View):
@@ -33,7 +71,8 @@ class RegisterView(View):
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}')
             # неуверена, так ли делать возврат на домашнюю страницу после успешной регистрации
-            return redirect(to='api/home')
+            return redirect('home')
+            # return redirect(to='api/home')
 
         return render(request, self.template_name, {'form': form})
 
