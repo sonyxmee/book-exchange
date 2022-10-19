@@ -6,9 +6,9 @@ from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChan
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, DetailView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, EditForm
 from .utils import DataMixin
 from .models import Book, Client
 
@@ -53,6 +53,13 @@ class AddBook(CreateView):  # DataMixin,
     #     return context | c_def
 
 
+class ShowBook(DetailView):
+    model = Book
+    template_name = 'shop/showbook.html'
+    context_object_name = 'book'
+    # slug_url_kwarg = 'book_slug'
+
+
 class RegisterView(View):
     form_class = RegisterForm
     initial = {'key': 'value'}
@@ -70,11 +77,66 @@ class RegisterView(View):
 
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}')
-            # неуверена, так ли делать возврат на домашнюю страницу после успешной регистрации
+            # не уверена, так ли делать возврат на домашнюю страницу после успешной регистрации
             return redirect('home')
             # return redirect(to='api/home')
 
         return render(request, self.template_name, {'form': form})
+
+
+# class CreateProfileView(CreateView):
+#     model = Client
+#
+#     template_name = 'shop/register.html'
+#     fields = ['first_name', 'last_name', 'vk_link', 'password1', 'password2']
+#
+#     def form_valid(self, form):
+#         form.instance.user = self.request.user
+#         return super().form_valid(form)
+#
+#     success_url = reverse_lazy('home')
+
+def register(request):
+    # pylint: disable=maybe-no-member
+    form = RegisterForm()
+    if request.method == 'POST':
+
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            user = form.cleaned_data.get('username')
+            messages.success(request, 'Account was created for ' + user)
+            return redirect('register_profile')
+
+    else:
+        form = RegisterForm()
+
+    return render(request, 'shop/register.html', {'form': form})
+
+
+def RegisterPage(request):
+    if request.method == 'POST':
+
+        form = EditForm(request.POST,
+                        request.FILES,
+                        instance=request.user.profileuser)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Your Profile has been updated!')
+            return redirect('home')
+
+        else:
+            messages.error(request, 'Update failed. Please check if your inputs are valid.')
+
+    else:
+        form = EditForm(instance=request.user.profileuser)
+
+    context = {
+        'form': form,
+        'on_profile_page': True
+    }
+    return render(request, '', context)
 
 
 # Class based view that extends from the built in login view to add a remember me functionality
