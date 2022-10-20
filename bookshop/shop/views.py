@@ -1,6 +1,7 @@
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.template import RequestContext
 from django.urls import reverse_lazy
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView
 from django.contrib import messages
@@ -8,7 +9,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.views.generic import CreateView, ListView, DetailView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, EditForm
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, UserForm, \
+    UserProfileForm
 from .utils import DataMixin
 from .models import Book, Client
 
@@ -57,7 +59,84 @@ class ShowBook(DetailView):
     model = Book
     template_name = 'shop/showbook.html'
     context_object_name = 'book'
+
     # slug_url_kwarg = 'book_slug'
+
+
+# def register(request):
+#     # pylint: disable=maybe-no-member
+#     form = RegisterForm()
+#     if request.method == 'POST':
+#
+#         form = RegisterForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             user = form.cleaned_data.get('username')
+#             messages.success(request, 'Account was created for ' + user)
+#             return redirect('register_profile')
+#
+#     else:
+#         form = RegisterForm()
+#
+#     return render(request, 'shop/register.html', {'form': form})
+
+
+# def register(request):
+#     if request.method == "POST":
+#         form = RegisterForm(request.POST, instance=request.user)
+#
+#         if form.is_valid():
+#             # terms = form.save(commit=False)
+#             # terms.user=request.user
+#             # terms.save()
+#             # return redirect('home')
+#             form.save()
+#             username = form.cleaned_data.get('username')
+#             messages.success(request, f'Account created for {username}')
+#             return redirect('home')
+#     else:
+#         form = RegisterForm()
+#
+#     return render(request, 'shop/register.html', {'form': form})
+
+    # if request.method == "POST":
+    #     form = UserForm(request.POST, instance=request.user)
+    #     profile_form = UserProfileForm(request.POST, instance=request.user.profile)
+    #     if form.is_valid() and profile_form.is_valid():
+    #         user = form.save(commit=False)
+    #         profile = profile_form.save()
+    #         profile.user = user
+    #
+    #         profile.save()
+    #         user.save()
+    #         # messages.success(request,('Your profile was successfully updated!'))
+    #         return redirect('home')
+    # form = UserForm(instance=request.user)
+    # profile_form = UserProfileForm(instance=request.user.profile)
+    # return render(request, 'shop/register_my.html', {'uform': form, 'pform': profile_form})
+
+
+    # if request.method == 'POST':
+    #     uform = UserForm(data=request.POST)
+    #     pform = UserProfileForm(data=request.POST)
+    #     if uform.is_valid() and pform.is_valid():
+    #         user = uform.save()
+    #         # form brings back a plain text string, not an encrypted password
+    #         pw = user.password
+    #         # thus we need to use set password to encrypt the password string
+    #         user.set_password(pw)
+    #         user.save()
+    #         profile = pform.save(commit=False)
+    #         profile.user = user
+    #         profile.save()
+    #     else:
+    #         print(uform.errors, pform.errors)
+    # else:
+    #     uform = UserForm()
+    #     pform = UserProfileForm()
+    #
+    # return render(request, 'shop/register_my.html', {'uform': uform, 'pform': pform})
+
 
 
 class RegisterView(View):
@@ -65,13 +144,13 @@ class RegisterView(View):
     initial = {'key': 'value'}
     template_name = 'shop/register.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        # will redirect to the home page if a user tries to access the register page while logged in
-        if request.user.is_authenticated:
-            return redirect('home')
-
-        # else process dispatch as it otherwise normally would
-        return super(RegisterView, self).dispatch(request, *args, **kwargs)
+    # def dispatch(self, request, *args, **kwargs):
+    #     # will redirect to the home page if a user tries to access the register page while logged in
+    #     if request.user.is_authenticated:
+    #         return redirect('home')
+    #
+    #     # else process dispatch as it otherwise normally would
+    #     return super(RegisterView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -102,47 +181,32 @@ class RegisterView(View):
 #
 #     success_url = reverse_lazy('home')
 
-def register(request):
-    # pylint: disable=maybe-no-member
-    form = RegisterForm()
-    if request.method == 'POST':
-
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            user = form.cleaned_data.get('username')
-            messages.success(request, 'Account was created for ' + user)
-            return redirect('register_profile')
-
-    else:
-        form = RegisterForm()
-
-    return render(request, 'shop/register.html', {'form': form})
-
-
-def RegisterPage(request):
-    if request.method == 'POST':
-
-        form = EditForm(request.POST,
-                        request.FILES,
-                        instance=request.user.profileuser)
-
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Your Profile has been updated!')
-            return redirect('home')
-
-        else:
-            messages.error(request, 'Update failed. Please check if your inputs are valid.')
-
-    else:
-        form = EditForm(instance=request.user.profileuser)
-
-    context = {
-        'form': form,
-        'on_profile_page': True
-    }
-    return render(request, '', context)
+#
+#
+#
+# def RegisterPage(request):
+#     if request.method == 'POST':
+#
+#         form = EditForm(request.POST,
+#                         request.FILES,
+#                         instance=request.user.profileuser)
+#
+#         if form.is_valid():
+#             form.save()
+#             messages.success(request, 'Your Profile has been updated!')
+#             return redirect('home')
+#
+#         else:
+#             messages.error(request, 'Update failed. Please check if your inputs are valid.')
+#
+#     else:
+#         form = EditForm(instance=request.user.profileuser)
+#
+#     context = {
+#         'form': form,
+#         'on_profile_page': True
+#     }
+#     return render(request, '', context)
 
 
 # Class based view that extends from the built in login view to add a remember me functionality
