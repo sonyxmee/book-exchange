@@ -8,10 +8,10 @@ from .models import Client, Book
 class UserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ["username", "first_name", "last_name", "email", "password"]
+        fields = ["username", "email", "password"]
 
 
-class UserProfileForm(forms.ModelForm):
+class ProfileForm(forms.ModelForm):
     class Meta:
         model = Client
         fields = ['first_name', 'last_name', 'vk_link']
