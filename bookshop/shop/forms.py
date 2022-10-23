@@ -22,10 +22,10 @@ class RegisterForm(UserCreationForm):
                                widget=forms.TextInput(attrs={'placeholder': 'Имя Пользователя',
                                                              'class': 'form-control',
                                                              }))
-    vk_link = forms.URLField(required=True,
-                               widget=forms.URLInput(attrs={'placeholder': 'VK ссылка',
-                                                            'class': 'form-control',
-                                                            }))
+    # vk_link = forms.URLField(required=True,
+    #                            widget=forms.URLInput(attrs={'placeholder': 'VK ссылка',
+    #                                                         'class': 'form-control',
+    #                                                         }))
     password1 = forms.CharField(max_length=50,
                                 required=True,
                                 widget=forms.PasswordInput(attrs={'placeholder': 'Пароль',
@@ -43,7 +43,7 @@ class RegisterForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'username', 'vk_link', 'password1', 'password2']
+        fields = ['first_name', 'last_name', 'username', 'password1', 'password2']  # 'vk_link',
 
 
 class LoginForm(AuthenticationForm):
@@ -100,4 +100,3 @@ class AddBookForm(forms.ModelForm):
         fields = ['title', 'author', 'genre']
 
         # widgets={}
-
