@@ -4,8 +4,6 @@ from django.contrib.auth.models import User
 
 class Client(models.Model):
     # id = models.IntegerField(primary_key=True, verbose_name='код')
-    first_name = models.CharField(max_length=30, verbose_name='имя')
-    last_name = models.CharField(max_length=30, verbose_name='фамилия')
     vk_link = models.CharField(max_length=100, verbose_name='vk_link')
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='profile')
 

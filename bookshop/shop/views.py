@@ -1,3 +1,4 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
@@ -6,9 +7,9 @@ from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChan
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, PasswordChangingForm
 from .utils import DataMixin
 from .models import Book, Client
 
@@ -85,6 +86,37 @@ class RegisterView(View):
         return render(request, self.template_name, {'form': form})
 
 
+class UpdatePublicDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    login_url = "upd_profile"
+    form_class = UpdateProfileForm
+    template_name = "shop/edit_profile.html"
+    success_url = reverse_lazy('home')
+    success_message = "User updated"
+
+    def get_object(self):
+        return self.request.user.profile
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, "Please submit the form carefully")
+        return redirect('home')
+
+
+class UpdateUserDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    login_url = "upd_user"
+    form_class = UpdateUserForm
+    template_name = "shop/edit_user.html"
+    success_url = reverse_lazy('home')
+    success_message = "User updated"
+
+    def get_object(self):
+        return self.request.user
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR,
+                             "Please submit the form carefully")
+        return redirect('home')
+
+
 # Class based view that extends from the built in login view to add a remember me functionality
 class CustomLoginView(LoginView):
     form_class = LoginForm
@@ -113,25 +145,41 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
     success_url = reverse_lazy('home')
 
 
-class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
-    template_name = 'shop/change_password.html'
-    success_message = "Пароль был успешно изменен"
-    success_url = reverse_lazy('home')
+
+class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    form_class = PasswordChangingForm
+    login_url = 'change_passw'
+    success_url = reverse_lazy('password_success')
 
 
-@login_required
-def profile(request):
-    if request.method == 'POST':
-        user_form = UpdateUserForm(request.POST, instance=request.user)
-        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+def password_success(request):
+    return render(request, "shop/change_passw_success.html")
 
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Профиль был успешно изменен')
-            return redirect(to='profile')
-    else:
-        user_form = UpdateUserForm(instance=request.user)
-        profile_form = UpdateProfileForm(instance=request.user.profile)
+# @login_required
+# def profile(request):
+#     if request.method == 'POST':
+#         user_form = UpdateUserForm(request.POST, instance=request.user)
+#         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+#
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             messages.success(request, 'Профиль был успешно изменен')
+#             return redirect(to='profile')
+#     else:
+#         user_form = UpdateUserForm(instance=request.user)
+#         profile_form = UpdateProfileForm(instance=request.user.profile)
+#
+#     return render(request, 'shop/profile.html', {'user_form': user_form, 'profile_form': profile_form})
 
-    return render(request, 'shop/profile.html', {'user_form': user_form, 'profile_form': profile_form})
+class Profile(LoginRequiredMixin, View):
+    model = Client
+    login_url = 'profile'
+    template_name = "shop/profile.html"
+
+    def get(self, request, ):
+        user_profile_data = Client.objects.get(user=request.user.id)
+        context = {
+            'user_profile_data': user_profile_data
+        }
+        return render(request, self.template_name, context)
