@@ -2,7 +2,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
@@ -16,7 +16,11 @@ from .models import Book, Client
 
 @login_required
 def home(request):
-    return render(request, 'shop/home.html')
+    return render(request, 'shop/home.html')\
+
+@login_required
+def edit_info(request):
+    return render(request, 'shop/edit_info.html')
 
 
 class BookView(ListView):  # DataMixin,
@@ -33,18 +37,23 @@ class BookView(ListView):  # DataMixin,
         return context
 
 
-class AddBook(CreateView):  # DataMixin,
+class AddBook(CreateView):
     form_class = AddBookForm
     template_name = 'shop/addBook.html'
     success_url = reverse_lazy('listbook')
 
     def form_valid(self, form):
+        if not self.request.user.profile.vk_link :
+            messages.add_message(self.request, messages.ERROR, "ЗАПОЛНИТЕ ПРОФИЛЬ!")
+            # mes='ЗАПОЛНИТЕ ПРОФИЛЬ!'
+            return redirect('upd_profile')
+            # return HttpResponse('ЗАПОЛНИТЕ ПРОФИЛЬ!')
         # создаем форму, но не отправляем его в БД, пока просто держим в памяти
         fields = form.save(commit=False)
         # Через реквест передаем недостающую форму, которая обязательна
         fields.client = Client.objects.get(user=self.request.user)
-        # Наконец сохраняем в БД
-        # fields.save()
+
+
         return super().form_valid(form)
 
     #
@@ -93,6 +102,11 @@ class UpdatePublicDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_url = reverse_lazy('home')
     success_message = "User updated"
 
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        return context
+
+
     def get_object(self):
         return self.request.user.profile
 
@@ -117,6 +131,29 @@ class UpdateUserDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
         return redirect('home')
 
 
+class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    form_class = PasswordChangingForm
+    login_url = 'change_passw'
+    success_url = reverse_lazy('password_success')
+
+
+def password_success(request):
+    return render(request, "shop/change_passw_success.html")
+
+
+class Profile(LoginRequiredMixin, View):
+    model = Client
+    login_url = 'profile'
+    template_name = "shop/profile.html"
+
+    def get(self, request, ):
+        user_profile_data = Client.objects.get(user=request.user.id)
+        context = {
+            'user_profile_data': user_profile_data
+        }
+        return render(request, self.template_name, context)
+
+
 # Class based view that extends from the built in login view to add a remember me functionality
 class CustomLoginView(LoginView):
     form_class = LoginForm
@@ -135,7 +172,7 @@ class CustomLoginView(LoginView):
         return super(CustomLoginView, self).form_valid(form)
 
 
-class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+class ForgotPasswordView(SuccessMessageMixin, PasswordResetView):
     template_name = 'shop/password_reset.html'
     email_template_name = 'shop/password_reset_email.html'
     subject_template_name = 'shop/password_reset_subject'
@@ -143,17 +180,6 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
                       " если Вы не получили письмо, " \
                       "проверьте папку Спам и корректность введенного адреса почты."
     success_url = reverse_lazy('home')
-
-
-
-class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
-    form_class = PasswordChangingForm
-    login_url = 'change_passw'
-    success_url = reverse_lazy('password_success')
-
-
-def password_success(request):
-    return render(request, "shop/change_passw_success.html")
 
 # @login_required
 # def profile(request):
@@ -171,15 +197,3 @@ def password_success(request):
 #         profile_form = UpdateProfileForm(instance=request.user.profile)
 #
 #     return render(request, 'shop/profile.html', {'user_form': user_form, 'profile_form': profile_form})
-
-class Profile(LoginRequiredMixin, View):
-    model = Client
-    login_url = 'profile'
-    template_name = "shop/profile.html"
-
-    def get(self, request, ):
-        user_profile_data = Client.objects.get(user=request.user.id)
-        context = {
-            'user_profile_data': user_profile_data
-        }
-        return render(request, self.template_name, context)
