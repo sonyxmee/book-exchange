@@ -1,21 +1,26 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 from django.contrib.auth.views import LoginView, PasswordResetView, PasswordChangeView
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
-from django.views.generic import CreateView, ListView
+from django.views.generic import CreateView, ListView, UpdateView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, PasswordChangingForm
 from .utils import DataMixin
 from .models import Book, Client
 
 
 @login_required
 def home(request):
-    return render(request, 'shop/home.html')
+    return render(request, 'shop/home.html')\
+
+@login_required
+def edit_info(request):
+    return render(request, 'shop/edit_info.html')
 
 
 class BookView(ListView):  # DataMixin,
@@ -32,18 +37,23 @@ class BookView(ListView):  # DataMixin,
         return context
 
 
-class AddBook(CreateView):  # DataMixin,
+class AddBook(CreateView):
     form_class = AddBookForm
     template_name = 'shop/addBook.html'
     success_url = reverse_lazy('listbook')
 
     def form_valid(self, form):
+        if not self.request.user.profile.vk_link :
+            messages.add_message(self.request, messages.ERROR, "ЗАПОЛНИТЕ ПРОФИЛЬ!")
+            # mes='ЗАПОЛНИТЕ ПРОФИЛЬ!'
+            return redirect('upd_profile')
+            # return HttpResponse('ЗАПОЛНИТЕ ПРОФИЛЬ!')
         # создаем форму, но не отправляем его в БД, пока просто держим в памяти
         fields = form.save(commit=False)
         # Через реквест передаем недостающую форму, которая обязательна
         fields.client = Client.objects.get(user=self.request.user)
-        # Наконец сохраняем в БД
-        # fields.save()
+
+
         return super().form_valid(form)
 
     #
@@ -57,6 +67,14 @@ class RegisterView(View):
     form_class = RegisterForm
     initial = {'key': 'value'}
     template_name = 'shop/register.html'
+
+    def dispatch(self, request, *args, **kwargs):
+        # will redirect to the home page if a user tries to access the register page while logged in
+        if request.user.is_authenticated:
+            return redirect(to='/')
+
+        # else process dispatch as it otherwise normally would
+        return super(RegisterView, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
@@ -77,6 +95,65 @@ class RegisterView(View):
         return render(request, self.template_name, {'form': form})
 
 
+class UpdatePublicDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    login_url = "upd_profile"
+    form_class = UpdateProfileForm
+    template_name = "shop/edit_profile.html"
+    success_url = reverse_lazy('home')
+    success_message = "User updated"
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        return context
+
+
+    def get_object(self):
+        return self.request.user.profile
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR, "Please submit the form carefully")
+        return redirect('home')
+
+
+class UpdateUserDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
+    login_url = "upd_user"
+    form_class = UpdateUserForm
+    template_name = "shop/edit_user.html"
+    success_url = reverse_lazy('home')
+    success_message = "User updated"
+
+    def get_object(self):
+        return self.request.user
+
+    def form_invalid(self, form):
+        messages.add_message(self.request, messages.ERROR,
+                             "Please submit the form carefully")
+        return redirect('home')
+
+
+class PasswordChangeView(LoginRequiredMixin, PasswordChangeView):
+    form_class = PasswordChangingForm
+    login_url = 'change_passw'
+    success_url = reverse_lazy('password_success')
+
+
+def password_success(request):
+    return render(request, "shop/change_passw_success.html")
+
+
+class Profile(LoginRequiredMixin, View):
+    model = Client
+    login_url = 'profile'
+    template_name = "shop/profile.html"
+
+    def get(self, request, ):
+        user_profile_data = Client.objects.get(user=request.user.id)
+        context = {
+            'user_profile_data': user_profile_data
+        }
+        return render(request, self.template_name, context)
+
+
 # Class based view that extends from the built in login view to add a remember me functionality
 class CustomLoginView(LoginView):
     form_class = LoginForm
@@ -95,7 +172,7 @@ class CustomLoginView(LoginView):
         return super(CustomLoginView, self).form_valid(form)
 
 
-class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
+class ForgotPasswordView(SuccessMessageMixin, PasswordResetView):
     template_name = 'shop/password_reset.html'
     email_template_name = 'shop/password_reset_email.html'
     subject_template_name = 'shop/password_reset_subject'
@@ -104,26 +181,19 @@ class ResetPasswordView(SuccessMessageMixin, PasswordResetView):
                       "проверьте папку Спам и корректность введенного адреса почты."
     success_url = reverse_lazy('home')
 
-
-class ChangePasswordView(SuccessMessageMixin, PasswordChangeView):
-    template_name = 'shop/change_password.html'
-    success_message = "Пароль был успешно изменен"
-    success_url = reverse_lazy('home')
-
-
-@login_required
-def profile(request):
-    if request.method == 'POST':
-        user_form = UpdateUserForm(request.POST, instance=request.user)
-        profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            messages.success(request, 'Профиль был успешно изменен')
-            return redirect(to='profile')
-    else:
-        user_form = UpdateUserForm(instance=request.user)
-        profile_form = UpdateProfileForm(instance=request.user.profile)
-
-    return render(request, 'shop/profile.html', {'user_form': user_form, 'profile_form': profile_form})
+# @login_required
+# def profile(request):
+#     if request.method == 'POST':
+#         user_form = UpdateUserForm(request.POST, instance=request.user)
+#         profile_form = UpdateProfileForm(request.POST, request.FILES, instance=request.user.profile)
+#
+#         if user_form.is_valid() and profile_form.is_valid():
+#             user_form.save()
+#             profile_form.save()
+#             messages.success(request, 'Профиль был успешно изменен')
+#             return redirect(to='profile')
+#     else:
+#         user_form = UpdateUserForm(instance=request.user)
+#         profile_form = UpdateProfileForm(instance=request.user.profile)
+#
+#     return render(request, 'shop/profile.html', {'user_form': user_form, 'profile_form': profile_form})
