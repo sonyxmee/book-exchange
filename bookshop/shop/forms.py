@@ -52,6 +52,7 @@ class LoginForm(AuthenticationForm):
                                required=True,
                                widget=forms.TextInput(attrs={'placeholder': 'Имя Пользователя',
                                                              'class': 'form-control',
+                                                             'id':'username',
                                                              }))
     password = forms.CharField(max_length=50,
                                required=True,

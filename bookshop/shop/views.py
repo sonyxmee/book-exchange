@@ -14,9 +14,18 @@ from .utils import DataMixin
 from .models import Book, Client
 
 
+
+
+def main(request):
+    return render(request, 'shop/index.html') # 'shop/base.html'
+
+class LoginAjax(View):
+    def post(self, request):
+        return {'status': True}
+
 @login_required
 def home(request):
-    return render(request, 'shop/home.html')\
+    return render(request, 'shop/home.html')
 
 @login_required
 def edit_info(request):
@@ -88,7 +97,6 @@ class RegisterView(View):
 
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}')
-            # неуверена, так ли делать возврат на домашнюю страницу после успешной регистрации
             return redirect('home')
             # return redirect(to='api/home')
 
@@ -157,6 +165,7 @@ class Profile(LoginRequiredMixin, View):
 # Class based view that extends from the built in login view to add a remember me functionality
 class CustomLoginView(LoginView):
     form_class = LoginForm
+
 
     def form_valid(self, form):
         remember_me = form.cleaned_data.get('remember_me')
