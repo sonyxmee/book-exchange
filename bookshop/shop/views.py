@@ -1,5 +1,7 @@
+from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import HttpResponse
+from django.core.mail import send_mail
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
@@ -9,19 +11,39 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, PasswordChangingForm
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, PasswordChangingForm, \
+    ForgotPasswForm
 from .utils import DataMixin
 from .models import Book, Client
 
 
+def main(request):
+    return render(request, 'shop/index.html')  # 'shop/base.html'
+
+
+
 @login_required
 def home(request):
-    return render(request, 'shop/home.html')\
+    return render(request, 'shop/home.html')
+
 
 @login_required
 def edit_info(request):
     return render(request, 'shop/edit_info.html')
 
+
+# class ProfileView(ListView):
+#     model = Client
+#     template_name = 'shop/profile.html'
+#     context_object_name = 'profile'
+#
+#     def get_queryset(self):
+#         return Client.objects.filter(client__user=self.request.user)
+#
+#     def get_context_data(self, *, object_list=None, **kwargs):
+#         context = super().get_context_data(**kwargs)
+#         context['title'] = 'Профиль'
+#         return context
 
 class BookView(ListView):  # DataMixin,
     model = Book
@@ -43,7 +65,7 @@ class AddBook(CreateView):
     success_url = reverse_lazy('listbook')
 
     def form_valid(self, form):
-        if not self.request.user.profile.vk_link :
+        if not self.request.user.profile.vk_link:
             messages.add_message(self.request, messages.ERROR, "ЗАПОЛНИТЕ ПРОФИЛЬ!")
             # mes='ЗАПОЛНИТЕ ПРОФИЛЬ!'
             return redirect('upd_profile')
@@ -52,7 +74,6 @@ class AddBook(CreateView):
         fields = form.save(commit=False)
         # Через реквест передаем недостающую форму, которая обязательна
         fields.client = Client.objects.get(user=self.request.user)
-
 
         return super().form_valid(form)
 
@@ -66,33 +87,44 @@ class AddBook(CreateView):
 class RegisterView(View):
     form_class = RegisterForm
     initial = {'key': 'value'}
-    template_name = 'shop/register.html'
+    template_name = 'shop/index.html'
 
-    def dispatch(self, request, *args, **kwargs):
-        # will redirect to the home page if a user tries to access the register page while logged in
-        if request.user.is_authenticated:
-            return redirect(to='/')
-
-        # else process dispatch as it otherwise normally would
-        return super(RegisterView, self).dispatch(request, *args, **kwargs)
-
+    # def dispatch(self, request, *args, **kwargs):
+    #     # will redirect to the home page if a user tries to access the register page while logged in
+    #     if request.user.is_authenticated:
+    #         return redirect(to='/')
+    #
+    #     # else process dispatch as it otherwise normally would
+    #     return super(RegisterView, self).dispatch(request, *args, **kwargs)
+    #
     def get(self, request, *args, **kwargs):
         form = self.form_class(initial=self.initial)
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
-
+        # print('1')
         if form.is_valid():
-            form.save()
+            user = form.save()
 
             username = form.cleaned_data.get('username')
             messages.success(request, f'Account created for {username}')
-            # неуверена, так ли делать возврат на домашнюю страницу после успешной регистрации
+            # print('2')
+            login(self.request, user)
             return redirect('home')
+        else:
+            print(form.errors.as_data())
+            # return JsonResponse(
+            #     data={
+            #         'status': 400,
+            #         'error': 'Пароль и логин не валидные'
+            #     },
+            #     status=200
+            # )
             # return redirect(to='api/home')
-
-        return render(request, self.template_name, {'form': form})
+        # print('3')
+        # messages.add_message(self.request, messages.ERROR, "NOT valid data form!")
+        return render(request, self.template_name, {'registerform': form})
 
 
 class UpdatePublicDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
@@ -103,9 +135,8 @@ class UpdatePublicDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     success_message = "User updated"
 
     def get_context_data(self, **kwargs):
-        context=super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
         return context
-
 
     def get_object(self):
         return self.request.user.profile
@@ -181,6 +212,21 @@ class ForgotPasswordView(SuccessMessageMixin, PasswordResetView):
                       "проверьте папку Спам и корректность введенного адреса почты."
     success_url = reverse_lazy('home')
 
+
+# def forgot_passw(request):
+#     if request.method == 'POST':
+#         form = ForgotPasswForm(request.POST)
+#         if form.is_valid():
+#             mail = send_mail('Восстановление пароля', 'MESSAGE', 'forpython024@gmail.com', [form.cleaned_data['email']],
+#                              fail_silently=False)
+#             if mail:
+#                 messages.success(request, 'Письмо отправлено Вам на почту!')
+#                 return redirect('')
+#             else:
+#                 messages.error(request, 'Ошибка отправки письма на почту!')
+#     else:
+#         form = ForgotPasswForm()
+#     return render(request, 'shop/password_reset.html')
 # @login_required
 # def profile(request):
 #     if request.method == 'POST':

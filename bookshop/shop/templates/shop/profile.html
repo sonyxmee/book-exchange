@@ -6,7 +6,9 @@
         <br><a class="nav-link my-item" href="{% url 'addbook' %}">Добавить книгу</a>
         <br><a class="nav-link my-item" href="{% url 'listbook' %}">Мои книги</a>
         <br><a class="nav-link my-item" href="{% url 'edit_info' %}">Редактировать данные</a>
-
+        {% if profile %}
+            <p>{{ profile.vk_link }}</p>
+        {% endif %}
     </div>
 
 {% endblock content %}

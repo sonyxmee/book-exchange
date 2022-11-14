@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
+from django.core.exceptions import ValidationError
 
 from .models import Client, Book
 
@@ -11,36 +12,45 @@ class RegisterForm(UserCreationForm):
                                  required=True,
                                  widget=forms.TextInput(attrs={'placeholder': 'Имя',
                                                                'class': 'form-control',
+                                                               'id': "first-name",
                                                                }))
     last_name = forms.CharField(max_length=100,
                                 required=True,
                                 widget=forms.TextInput(attrs={'placeholder': 'Фамилия',
                                                               'class': 'form-control',
+                                                              'id': "last-name",
                                                               }))
     username = forms.CharField(max_length=100,
                                required=True,
                                widget=forms.TextInput(attrs={'placeholder': 'Имя Пользователя',
                                                              'class': 'form-control',
+                                                             'id': "username",
                                                              }))
     email = forms.EmailField(max_length=100,
                              required=True,
                              widget=forms.TextInput(attrs={'placeholder': 'Электронная почта',
                                                            'class': 'form-control',
+                                                           'id': "email",
                                                            }))
     password1 = forms.CharField(max_length=50,
                                 required=True,
                                 widget=forms.PasswordInput(attrs={'placeholder': 'Пароль',
                                                                   'class': 'form-control',
                                                                   'data-toggle': 'password',
-                                                                  'id': 'password',
+                                                                  'id': 'password1',
                                                                   }))
     password2 = forms.CharField(max_length=50,
                                 required=True,
                                 widget=forms.PasswordInput(attrs={'placeholder': 'Подтвердите Пароль',
                                                                   'class': 'form-control',
                                                                   'data-toggle': 'password',
-                                                                  'id': 'password',
+                                                                  'id': 'password2',
                                                                   }))
+
+    def clean(self):
+        cleaned_data=super().clean()
+        if cleaned_data.get('username')=='hi':
+            raise ValidationError('Unknown username!')
 
     class Meta:
         model = User
@@ -52,6 +62,7 @@ class LoginForm(AuthenticationForm):
                                required=True,
                                widget=forms.TextInput(attrs={'placeholder': 'Имя Пользователя',
                                                              'class': 'form-control',
+                                                             'id':'username',
                                                              }))
     password = forms.CharField(max_length=50,
                                required=True,
@@ -97,6 +108,7 @@ class UpdateProfileForm(forms.ModelForm):
         model = Client
         fields = ['vk_link']
 
+
 class PasswordChangingForm(PasswordChangeForm):
     old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Old Password'}))
     new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Passowrd'}))
@@ -113,3 +125,11 @@ class AddBookForm(forms.ModelForm):
         fields = ['title', 'author', 'genre']
 
         # widgets={}
+
+class ForgotPasswForm(forms.Form):
+    email = forms.EmailField(max_length=100,
+                             required=True,
+                             widget=forms.TextInput(attrs={'placeholder': 'Электронная почта',
+                                                           'class': 'form-control',
+                                                           'id': "email",
+                                                           }))
