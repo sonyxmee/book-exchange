@@ -213,20 +213,22 @@ class ForgotPasswordView(SuccessMessageMixin, PasswordResetView):
     success_url = reverse_lazy('home')
 
 
-# def forgot_passw(request):
-#     if request.method == 'POST':
-#         form = ForgotPasswForm(request.POST)
-#         if form.is_valid():
-#             mail = send_mail('Восстановление пароля', 'MESSAGE', 'forpython024@gmail.com', [form.cleaned_data['email']],
-#                              fail_silently=False)
-#             if mail:
-#                 messages.success(request, 'Письмо отправлено Вам на почту!')
-#                 return redirect('')
-#             else:
-#                 messages.error(request, 'Ошибка отправки письма на почту!')
-#     else:
-#         form = ForgotPasswForm()
-#     return render(request, 'shop/password_reset.html')
+def forgot_passw(request):
+    if request.method == 'POST':
+        form = ForgotPasswForm(request.POST)
+        if form.is_valid():
+            mail = send_mail('Восстановление пароля', 'MESSAGE', 'forpython024@gmail.com', [form.cleaned_data['email']],
+                             fail_silently=False)
+            if mail:
+                messages.success(request, 'Письмо отправлено Вам на почту!')
+                return redirect('')
+            else:
+                messages.error(request, 'Ошибка отправки письма на почту!')
+    else:
+        form = ForgotPasswForm()
+    return render(request, 'shop/password_reset.html')
+
+
 # @login_required
 # def profile(request):
 #     if request.method == 'POST':
