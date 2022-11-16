@@ -1,0 +1,10 @@
+{% extends "shop/base.html" %}
+{% block title %}Profile Page{% endblock title %}
+{% block content %}
+    <div class="row my-3 p-3">
+      <h1>Edit data</h1>
+      <br><a class="nav-link my-item" href="{% url 'upd_profile' %}">Редактировать контактную информацию</a>
+      <br><a class="nav-link my-item" href="{% url 'upd_user' %}">Редактировать личную информацию</a>
+      <br><a class="nav-link my-item" href="{% url 'change_passw' %}">Изменить пароль</a>
+    </div>
+{% endblock content %}
