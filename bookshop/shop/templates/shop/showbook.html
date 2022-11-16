@@ -1,0 +1,9 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}ShowBook Page{% endblock title %}
+{% block content %}
+<h1>{{ book.title }}</h1>
+<p>{{ book.author }}</p>
+<p>{{ book.genre }}</p>
+<p>{{ book.client.vk_link }}</p>
+{% endblock %}

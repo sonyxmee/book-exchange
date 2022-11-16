@@ -1,0 +1,14 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}ListBook Page{% endblock title %}
+{% block content %}
+    <div class="container">
+        <h1>{{title}}</h1>
+        <ul>
+        {% for pr in prod %}
+            <li>{{pr.title}}</li>
+        {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}

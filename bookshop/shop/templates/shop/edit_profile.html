@@ -1,0 +1,22 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Edit profile{% endblock title %}
+
+{% block content %}
+<h2>Update, {{user.username}}</h2>
+
+<div class="row">
+    <div class="col-md-9">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="small mb-1">Vk_link</label>
+                    {{ form.vk_link }}
+                </div>
+            </div>
+            <button class="btn btn-lg btn-success mt-2" type="submit">Update user</button>
+        </form>
+    </div>
+</div>
+{% endblock content %}
