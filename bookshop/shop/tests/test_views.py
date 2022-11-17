@@ -21,31 +21,55 @@ class ShopTest(TestCase):
             executable_path="driver/chromedriver.exe",
             options=options)
 
-    # def test_1_register(self):
-    #     driver = self.driver
-    #     driver.get('https://www.bookcrossing.com/')
-    #     driver.maximize_window()
-    #
-    #     reg_main_btn = driver.find_element(By.LINK_TEXT, 'Зарегистрироваться').click()
-    #
-    #     login_inp = driver.find_element(By.ID, 'youser2')
-    #     login_inp.clear()
-    #     login_inp.send_keys(login)
-    #
-    #     email_inp = driver.find_element(By.ID, 'mesend2')
-    #     email_inp.clear()
-    #     email_inp.send_keys(email)
-    #
-    #     passw_inp = driver.find_element(By.ID, 'ICanNeverRememberThat')
-    #     passw_inp.clear()
-    #     passw_inp.send_keys(password)
-    #     time.sleep(3)
-    #
-    #     register_btn = driver.find_element(By.NAME, 'bJoinSubmit').click()
-    #     # result_text = driver.find_element(By.ID, 'results').text
-    #     self.assertIn("Спасибо за вступление в ряды буккроссеров!", driver.page_source)
-    #     # if not result_text == u'Thank You for Joining BookCrossing!':
-    #     #     raise NoSuchElementException('Аккаунт не создан!')
+    def test_1_register(self):
+        first_name = 'Mila'
+        last_name = 'Bochkova'
+        username = 'milaxme3'
+        email = 'example_email@gmail.com'
+        password = 'ytrewq4321'
+
+        driver = self.driver
+        driver.get('http://127.0.0.1:8000/api/')
+        driver.maximize_window()
+        time.sleep(1)
+
+        reg_main_btn = driver.find_element(By.ID, 'accountRegistration').click()
+
+        first_name_inp = driver.find_element(By.ID, 'first-name')
+        first_name_inp.clear()
+        first_name_inp.send_keys(first_name)
+
+        last_name_inp = driver.find_element(By.ID, 'last-name')
+        last_name_inp.clear()
+        last_name_inp.send_keys(last_name)
+
+        username_inp = driver.find_element(By.ID, 'username')
+        username_inp.clear()
+        username_inp.send_keys(username)
+
+        email_inp = driver.find_element(By.ID, 'email')
+        email_inp.clear()
+        email_inp.send_keys(email)
+
+        passw1_inp = driver.find_element(By.ID, 'password1')
+        passw1_inp.clear()
+        passw1_inp.send_keys(password)
+
+        passw2_inp = driver.find_element(By.ID, 'password2')
+        passw2_inp.clear()
+        passw2_inp.send_keys(password)
+
+        register_btn = driver.find_element(By.ID, 'enterInAccount').click()
+
+        time.sleep(3)
+
+        get_url = driver.current_url
+        self.assertEqual(get_url, 'http://127.0.0.1:8000/api/home/')
+
+        # result_text = driver.find_element(By.ID, 'results').text
+        # self.assertIn("Спасибо за вступление в ряды буккроссеров!", driver.page_source)
+        # if not result_text == u'Thank You for Joining BookCrossing!':
+        #     raise NoSuchElementException('Аккаунт не создан!')
 
     def test_2_login(self):
         print(self.username)
