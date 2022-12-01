@@ -1,5 +1,7 @@
 from django.urls import path
 from django.contrib.auth import views as auth_views
+
+from . import views
 from .views import *
 from .forms import LoginForm
 
@@ -26,6 +28,7 @@ urlpatterns = [
     path('listbook/', BookView.as_view(), name='listbook'),
     # path('register/', RegisterView.as_view(), name='register'),
     path('addbook/', AddBook.as_view(), name='addbook'),
+    path('delete_book/<book_id>', BookView.delete_book, name='delete-book'),
     path('home/', home, name='home'),
     path('', main, name='main'),
     path('edit_info/', edit_info, name='edit_info'),
