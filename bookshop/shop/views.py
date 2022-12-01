@@ -58,6 +58,11 @@ class BookView(ListView):  # DataMixin,
         context['title'] = 'Список книг'
         return context
 
+    def delete_book(self, book_id):
+        book = Book.objects.get(pk=book_id)
+        book.delete()
+        return redirect('home')
+
 
 class AddBook(CreateView):
     form_class = AddBookForm

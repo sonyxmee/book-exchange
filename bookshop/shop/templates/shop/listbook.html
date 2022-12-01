@@ -6,7 +6,7 @@
         <h1>{{title}}</h1>
         <ul>
         {% for pr in prod %}
-            <li>{{pr.title}}</li>
+            <li>{{pr.title}} <a href="{% url 'delete-book' pr.id%}" class="btn btn-outline-danger btn-sm">x</a> </li>
         {% endfor %}
         </ul>
     </div>
