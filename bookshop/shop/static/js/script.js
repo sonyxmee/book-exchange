@@ -1,23 +1,24 @@
+
+
 document.addEventListener('DOMContentLoaded', () => {
-	const modal = document.getElementById('id01'),
-		modal1 = document.getElementById('id02'),
+	const modal = document.getElementById('registerform'),
+		modal1 = document.getElementById('loginform'),
 		modal2 = document.getElementById('id03'),
 		btns = document.querySelectorAll('.clear'),
 		inputValues = document.querySelectorAll('input'),
 		accountRegistration = document.getElementById('accountRegistration'),
 		toComeInAccount = document.getElementById('toComeInAccount'),
+		modalCloseBtns= document.querySelectorAll('.modal__close'), // крестик
 		forgotRegistration = document.getElementById('forgotRegistration'),
 		forgotYourPassword = document.getElementById('forgotYourPassword');
 
 	
 	forgotRegistration.addEventListener('click', () => {
 		modal1.style.display = "none";
-		modal2.style.display = "none";
 	});
 
 	forgotYourPassword.addEventListener('click', () => {
 		modal1.style.display = "none";
-		modal.style.display = "none";
 	});
 
 	btns.forEach((btn) => {
@@ -31,10 +32,18 @@ document.addEventListener('DOMContentLoaded', () => {
 		});
 	});
 
-
-
-
-
+			
+	modalCloseBtns.forEach((modalCloseBtn) => {
+		modalCloseBtn.addEventListener('click', (e) =>{
+			modal1.style.display = "none";
+			modal.style.display = "none";
+			modal2.style.display = "none";
+			document.body.style.overflow = 'auto';
+			inputValues.forEach((inputValue) =>{
+				inputValue.value = '';
+			});
+		});
+	});
 
 
 // Когда пользователь щелкает в любом месте за пределами модального окна, 

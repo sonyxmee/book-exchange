@@ -18,13 +18,13 @@ from .models import Book, Client
 
 
 def main(request):
-    return render(request, 'shop/index.html')  # 'shop/base.html'
+    return render(request, 'shop/main_without_auth.html')  # 'shop/main_with_auth.html'
 
 
 
 @login_required
 def home(request):
-    return render(request, 'shop/home.html')
+    return render(request, 'shop/main_with_auth.html')
 
 
 @login_required
@@ -61,13 +61,13 @@ class BookView(ListView):  # DataMixin,
     def delete_book(self, book_id):
         book = Book.objects.get(pk=book_id)
         book.delete()
-        return redirect('home')
+        return redirect('profile')
 
 
 class AddBook(CreateView):
     form_class = AddBookForm
     template_name = 'shop/addBook.html'
-    success_url = reverse_lazy('listbook')
+    success_url = reverse_lazy('profile')
 
     def form_valid(self, form):
         if not self.request.user.profile.vk_link:
@@ -92,7 +92,7 @@ class AddBook(CreateView):
 class RegisterView(View):
     form_class = RegisterForm
     initial = {'key': 'value'}
-    template_name = 'shop/index.html'
+    template_name = 'shop/pr.html'
 
     # def dispatch(self, request, *args, **kwargs):
     #     # will redirect to the home page if a user tries to access the register page while logged in
@@ -180,12 +180,20 @@ def password_success(request):
 class Profile(LoginRequiredMixin, View):
     model = Client
     login_url = 'profile'
-    template_name = "shop/profile.html"
+    # template_name = "shop/profile.html"
+    template_name = "shop/pr.html"
 
     def get(self, request, ):
+        flag=False
         user_profile_data = Client.objects.get(user=request.user.id)
+        book_data = Book.objects.filter(client__user=self.request.user)
+        print(book_data)
+        if not book_data:
+            flag=True
         context = {
-            'user_profile_data': user_profile_data
+            'user_profile_data': user_profile_data,
+            'book_data': book_data,
+            'flag': flag
         }
         return render(request, self.template_name, context)
 
@@ -193,6 +201,15 @@ class Profile(LoginRequiredMixin, View):
 # Class based view that extends from the built in login view to add a remember me functionality
 class CustomLoginView(LoginView):
     form_class = LoginForm
+
+    # def form_valid(self, form):
+    #     """Security check complete. Log the user in."""
+    #     auth_login(self.request, form.get_user())
+    #     return HttpResponseRedirect(self.get_success_url())
+    # def form_valid(self, form):
+    #     user = form.save()
+    #     login(self.request, user)
+    #     return redirect('home')
 
     def form_valid(self, form):
         remember_me = form.cleaned_data.get('remember_me')

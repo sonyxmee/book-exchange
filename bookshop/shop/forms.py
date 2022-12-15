@@ -2,6 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordChangeForm
 from django.core.exceptions import ValidationError
+from django.forms import Textarea, TextInput
 
 from .models import Client, Book
 
@@ -72,11 +73,10 @@ class LoginForm(AuthenticationForm):
                                                                  'id': 'password',
                                                                  'name': 'password',
                                                                  }))
-    remember_me = forms.BooleanField(required=False)
 
     class Meta:
         model = User
-        fields = ['username', 'password', 'remember_me']
+        fields = ['username', 'password']
 
 
 class UpdateUserForm(forms.ModelForm):
@@ -121,10 +121,14 @@ class PasswordChangingForm(PasswordChangeForm):
 class AddBookForm(forms.ModelForm):
     class Meta:
         model = Book
-        # fields = '__all__'
         fields = ['title', 'author', 'genre']
 
-        # widgets={}
+        widgets = {
+            'title': TextInput(attrs={'class': 'form-control'}),
+            'author': TextInput(attrs={'class': 'form-control'}),
+            'genre': TextInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 70px'}),
+        }
+
 
 class ForgotPasswForm(forms.Form):
     email = forms.EmailField(max_length=100,

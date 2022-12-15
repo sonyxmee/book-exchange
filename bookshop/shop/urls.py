@@ -7,11 +7,11 @@ from .forms import LoginForm
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
-    # path('login/', CustomLoginView.as_view(redirect_authenticated_user=True, authentication_form=LoginForm),
-    #      name='login'),
-    path('login/', CustomLoginView.as_view(redirect_authenticated_user=True, template_name='shop/login.html',
-                                           authentication_form=LoginForm), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(template_name='shop/logout.html'), name='logout'),
+    path('login/', CustomLoginView.as_view(redirect_authenticated_user=True), name='login'),
+    # redirect_authenticated_user=True, authentication_form=LoginForm
+    # path('login/', CustomLoginView.as_view(redirect_authenticated_user=True, template_name='shop/login.html',
+    #                                        authentication_form=LoginForm), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='shop/main_without_auth.html'), name='logout'),
     # path('password_reset/', ForgotPasswordView.as_view(), name='password_reset'),
     path('password_reset/', forgot_passw, name='password_reset'),
     path('password_reset_confirm/<uidb64>/<token>/',
