@@ -182,22 +182,21 @@
 
 <!-- Всплывающее окно забыл пароль -->
 <div id="id03" class="modal">
-	<form class="modal-content">
+	<form class="modal-content" action ="{% url 'main' %}" method="POST">
 		<div class="container">
+			{% csrf_token %}
 			<div data-close class="modal__close">&times;</div>
 			<h1 style="text-align: center;">Восстановление пароля</h1>
 			<p style="text-align: center; font-weight: 300;">Для того, чтобы восстановать аккаунт необходимо ввести корректные данные.</p>
 			<hr class="modal__hr">
-			
-			<label for="psw" class="form-label">Пароль</label>
-			<input type="password" class="form-control" id="psw" placeholder="Пароль" required>
-			
-			<label for="psw-repeat" class="form-label">Повторить пароль</label>
-			<input type="password" style="margin-bottom: 70px;"  class="form-control" id="psw-repeat" placeholder="Ещё раз пароль" required>
+
+			<label for="psw" class="form-label">Email</label>
+			<input type="email" class="form-control" id="psw" placeholder="Email" required>
+
 		
 			<div class="clearfix">
 				<button type="button" class="btn btn-outline-danger clear cncl-btn mod-btn"   onclick='document.body.style.overflow = "auto"'>Отмена</button>
-				<button type="button"   id="recoverAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Восстановать пароль </button>
+				<button type="submit"   id="recoverAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Восстановать пароль </button>
 			</div> 
 		</div>
 	</form>
