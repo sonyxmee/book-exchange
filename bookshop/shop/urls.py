@@ -32,5 +32,6 @@ urlpatterns = [
     path('home/', home, name='home'),
     path('', main, name='main'),
     path('edit_info/', edit_info, name='edit_info'),
+    path('search', views.search_books, name='search-books')
 
 ]

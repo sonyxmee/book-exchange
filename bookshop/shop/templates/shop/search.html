@@ -17,7 +17,7 @@
 		<div class="container">
 			<a class="navbar__logo" href="#"><img style="margin-right: 10%;" src="img/Логотип.png" alt="logo"></a>
 			<div class="navbar__search">
-				<form class="navbar__form form">
+				<form class="navbar__form form" method="POST" action="{% url 'search-books' %}" name="searched">
 					<input class="form__input" type="text" placeholder="Введите название книги...">
 					<button class="form__btn" type="submit">
 						<img class="form__img" src="icons/icons8-поиск-24.svg" alt="icons">
@@ -42,12 +42,24 @@
 	</nav>
 	<main class="main" style="top: 81px; ">
 		<div class="container main-section" style="min-height: 900px;">
+			{% block content %}
 			<h2 class="main__title_h2" style="padding: 30px;">Результаты: </h2>
-			<div class="main__block" style="margin-bottom: 70px;">
-				<p class="main__text">Автор: <span>Автор</span></p>
-				<p class="main__text">Название книги:: <span>Название</span></p> 
-				<p class="main__text">Ссылка владельца: <span>url</span></p>
-			</div>
+				<center>
+					{% if searched %}
+						{% for book in books %}
+							{{ book }} - {{ book.client }} - <a href="{{ book.client.vk_link }}">{{ book.client.vk_link }}</a> <br/>
+						{% endfor %}
+					{% else %}
+						<h1> You forgot to search!! </h1>
+					{% endif %}
+				</center>
+			{% endblock %}
+<!--			<h2 class="main__title_h2" style="padding: 30px;">Результаты: </h2>-->
+<!--			<div class="main__block" style="margin-bottom: 70px;">-->
+<!--				<p class="main__text">Автор: <span>Автор</span></p>-->
+<!--				<p class="main__text">Название книги: <span>Название</span></p>-->
+<!--				<p class="main__text">Ссылка владельца: <span>url</span></p>-->
+<!--			</div>-->
 		</div>
 	</main>
 </body>

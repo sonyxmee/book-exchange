@@ -6,7 +6,7 @@
 	<form action ="{% url 'addbook' %}" method="POST" role="form" class="form-horizontal">
         {% csrf_token %}
 		<div class="form-group">
-			<lable for="email" class="control-label col-md-2">Добавление товара</label>
+			<label for="email" class="control-label col-md-2">Добавление товара</label>
 			<div>{{form.non_field_errors}}</div>
 			<div class="col-md-10">
 				{{ form.as_p }}

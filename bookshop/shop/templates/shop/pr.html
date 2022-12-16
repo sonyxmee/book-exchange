@@ -18,8 +18,8 @@
 		<div class="container">
 			<a class="navbar__logo" href="{% url 'home' %}"><img style="margin-right: 10%;" src="{% static 'img/Логотип.png' %}" alt="logo"></a>
 			<div class="navbar__search">
-				<form class="navbar__form form">
-					<input class="form__input" type="text" placeholder="Введите название книги...">
+				<form class="navbar__form form" method=POST action="{% url 'search-books' %}">
+					<input class="form__input" type="text" placeholder="Введите название книги..." name="searched">
 					<button class="form__btn" type="submit">
 						<img class="form__img" src="{% static 'icons/icons8-поиск-24.svg' %}" alt="icons">
 					</button>

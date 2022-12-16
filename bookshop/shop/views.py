@@ -16,6 +16,8 @@ from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, A
 from .utils import DataMixin
 from .models import Book, Client
 
+from django.utils.datastructures import MultiValueDictKeyError
+
 
 def main(request):
     return render(request, 'shop/main_without_auth.html')  # 'shop/main_with_auth.html'
@@ -30,6 +32,18 @@ def home(request):
 @login_required
 def edit_info(request):
     return render(request, 'shop/edit_info.html')
+
+
+def search_books(request):
+    if request.method == "POST":
+        searched = request.POST['searched']
+        books = Book.objects.filter(title__contains=searched)
+        return render(request,
+                      'shop/search.html',
+                      {'searched': searched,
+                       'books': books})
+    else:
+        return render(request, 'shop/search.html', {})
 
 
 # class ProfileView(ListView):
