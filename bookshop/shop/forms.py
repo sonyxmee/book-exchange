@@ -49,8 +49,8 @@ class RegisterForm(UserCreationForm):
                                                                   }))
 
     def clean(self):
-        cleaned_data=super().clean()
-        if cleaned_data.get('username')=='hi':
+        cleaned_data = super().clean()
+        if cleaned_data.get('username') == 'hi':
             raise ValidationError('Unknown username!')
 
     class Meta:
@@ -84,13 +84,13 @@ class UpdateUserForm(forms.ModelForm):
         attrs={'class': 'form-control', 'placeholder': "Enter your last name"}))
 
     email = forms.EmailField(
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': "Enter uour username"}))
+        widget=forms.EmailInput(attrs={'class': 'form-control list__input', 'placeholder': "Enter uour username"}))
 
     first_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Enter your first name"}))
+        widget=forms.TextInput(attrs={'class': 'form-control list__input', 'placeholder': "Enter your first name"}))
 
     last_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': "Enter your last name"}))
+        widget=forms.TextInput(attrs={'class': 'form-control list__input', 'placeholder': "Enter your last name"}))
 
 
 
@@ -102,7 +102,7 @@ class UpdateUserForm(forms.ModelForm):
 class UpdateProfileForm(forms.ModelForm):
     vk_link = forms.URLField(max_length=100,
                              required=True,
-                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+                             widget=forms.TextInput(attrs={'class': 'form-control', 'style': 'margin-bottom: 70px;'}))
 
     class Meta:
         model = Client
@@ -110,9 +110,13 @@ class UpdateProfileForm(forms.ModelForm):
 
 
 class PasswordChangingForm(PasswordChangeForm):
-    old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Old Password'}))
-    new_password1 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'New Passowrd'}))
-    new_password2 = forms.CharField(widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Conform new password'}))
+    old_password = forms.CharField(required=True, widget=forms.PasswordInput(
+        attrs={'class': 'form-control', 'placeholder': 'Old Password'}))
+    new_password1 = forms.CharField(required=True, widget=forms.PasswordInput(
+        attrs={'class': 'form-control', 'placeholder': 'New Passowrd'}))
+    new_password2 = forms.CharField(required=True, widget=forms.PasswordInput(
+        attrs={'class': 'form-control', 'placeholder': 'Conform new password', 'style': "margin-bottom: 70px;"}))
+
     class Meta:
         model = User
         fields = ['old_password', 'new_password1', 'new_password2']

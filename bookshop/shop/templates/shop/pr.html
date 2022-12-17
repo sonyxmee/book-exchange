@@ -84,9 +84,9 @@
 				<h1 style="text-align: center;">Выберите вид изменения данных</h1>
 				<hr class="modal__hr">
 				<div class="modal__father">
-					<button id="btnId08" class="btn modal__btn btn-outline-success" onclick="document.getElementById('id08').style.display='block';">Изменить личную информацию</button>
-					<button id="btnId07" class="btn modal__btn btn-outline-success" onclick="document.getElementById('id07').style.display='block';">Изменить контактные данные</button>
-					<button id="btnId06" class="btn modal__btn btn-outline-success" onclick="document.getElementById('id06').style.display='block';">Изменить пароль</button>
+					<a href="{% url 'upd_user' %}" class="btn modal__btn btn-outline-success">Изменить личную информацию</a>
+					<a href="{% url 'upd_profile' %}" class="btn modal__btn btn-outline-success">Изменить контактные данные</a>
+					<a href="{% url 'change_passw' %}" class="btn modal__btn btn-outline-success">Изменить пароль</button></a>
 					<button class="modal__btn-close cncl-btn btn btn-outline-danger clear " onclick='document.body.style.overflow = "auto"'>Отмена</button>
 				</div>
 			</div>
@@ -122,75 +122,76 @@
 		</form>
 	</div> 
 
-	<!--  изменить личную информацию  -->
-	<div id="id08" class="modal">
-		<form class="modal-content">
-			<div class="container">
-				<div data-close class="modal__close">&times;</div>
-				<h1 style="text-align: center;">Изменение личной информации</h1>
-				<p style="text-align: center; font-weight: 300;">Введите корректные данные.</p>
-				<hr class="modal__hr">
-				<label for="first-name" class="form-label">Имя</label>
-				<input type="text" class="form-control " id="first-name" placeholder="Имя" required>
+<!--	&lt;!&ndash;  изменить личную информацию  &ndash;&gt;-->
+<!--	<div id="id08" class="modal">-->
+<!--		<form class="modal-content">-->
+<!--			{% csrf_token %}-->
+<!--			<div class="container">-->
+<!--				<div data-close class="modal__close">&times;</div>-->
+<!--				<h1 style="text-align: center;">Изменение личной информации</h1>-->
+<!--				<p style="text-align: center; font-weight: 300;">Введите корректные данные.</p>-->
+<!--				<hr class="modal__hr">-->
+<!--				<label for="first-name" class="form-label">Имя</label>-->
+<!--				<input type="text" class="form-control " id="first-name" placeholder="Имя" required>-->
 
-				<label for="second-name" class="form-label">Фамилия</label>
-				<input type="text" class="form-control" id="second-name" placeholder="Фамилия" required>
+<!--				<label for="second-name" class="form-label">Фамилия</label>-->
+<!--				<input type="text" class="form-control" id="second-name" placeholder="Фамилия" required>-->
 
-				<label for="username" class="form-label">Ник</label>
-				<input type="text" style="margin-bottom: 70px;" class="form-control" id="username" placeholder="Ник" required>
+<!--				<label for="username" class="form-label">Ник</label>-->
+<!--				<input type="text" style="margin-bottom: 70px;" class="form-control" id="username" placeholder="Ник" required>-->
 
-				<div class="clearfix">
-					<button type="button"  class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>
-					<button type="button" id="enterInAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Изменить</button>
-				</div>
-			</div>
-		</form>
-	</div>
+<!--				<div class="clearfix">-->
+<!--					<button type="button"  class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>-->
+<!--					<button type="button" id="enterInAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Изменить</button>-->
+<!--				</div>-->
+<!--			</div>-->
+<!--		</form>-->
+<!--	</div>-->
 
-	<!-- изменить контактные данные  -->
-	<div id="id07" class="modal">
-		<form class="modal-content">
-			<div class="container">
-				<div data-close class="modal__close">&times;</div>
-				<h1 style="text-align: center;">Изменение контактных данных</h1>
-				<p style="text-align: center; font-weight: 300;">Введите корректные данные.</p>
-				<hr class="modal__hr">
-				<label for="email" class="form-label">Email</label>
-				<input type="text" class="form-control" id="email" aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback"  placeholder="Email" required>
-	
-				<label for="link" class="form-label">Введите ссылку на vk/Telegram</label>
-				<input type="text" style="margin-bottom: 70px;"  class="form-control" id="link" placeholder="Ссылочка" required>
-				
-				<div class="clearfix">
-					<button type="button"  class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>
-					<button type="button" id="enterInAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Изменить</button>
-				</div> 
-			</div>
-		</form>
-	</div> 
+<!--	&lt;!&ndash; изменить контактные данные  &ndash;&gt;-->
+<!--	<div id="id07" class="modal">-->
+<!--		<form class="modal-content">-->
+<!--			<div class="container">-->
+<!--				<div data-close class="modal__close">&times;</div>-->
+<!--				<h1 style="text-align: center;">Изменение контактных данных</h1>-->
+<!--				<p style="text-align: center; font-weight: 300;">Введите корректные данные.</p>-->
+<!--				<hr class="modal__hr">-->
+<!--				<label for="email" class="form-label">Email</label>-->
+<!--				<input type="text" class="form-control" id="email" aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback"  placeholder="Email" required>-->
+<!--	-->
+<!--				<label for="link" class="form-label">Введите ссылку на vk/Telegram</label>-->
+<!--				<input type="text" style="margin-bottom: 70px;"  class="form-control" id="link" placeholder="Ссылочка" required>-->
+<!--				-->
+<!--				<div class="clearfix">-->
+<!--					<button type="button"  class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>-->
+<!--					<button type="button" id="enterInAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Изменить</button>-->
+<!--				</div> -->
+<!--			</div>-->
+<!--		</form>-->
+<!--	</div> -->
 
-	<!--  изменить пароль  -->
-	<div id="id06" class="modal">
-		<form class="modal-content">
-			<div class="container">
-				<div data-close class="modal__close">&times;</div>
-				<h1 style="text-align: center;">Изменение пароля</h1>
-				<p style="text-align: center; font-weight: 300;">Для изменения пароля введите корректные данные.</p>
-				<hr class="modal__hr">
+<!--	&lt;!&ndash;  изменить пароль  &ndash;&gt;-->
+<!--	<div id="id06" class="modal">-->
+<!--		<form class="modal-content">-->
+<!--			<div class="container">-->
+<!--				<div data-close class="modal__close">&times;</div>-->
+<!--				<h1 style="text-align: center;">Изменение пароля</h1>-->
+<!--				<p style="text-align: center; font-weight: 300;">Для изменения пароля введите корректные данные.</p>-->
+<!--				<hr class="modal__hr">-->
 
-				<label for="psw" class="form-label">Пароль</label>
-				<input type="password" class="form-control" id="psw" placeholder="Пароль" required>
-		
-				<label for="psw-repeat" class="form-label">Подтвердите пароль</label>
-				<input type="password" style="margin-bottom: 70px;"  class="form-control" id="psw-reset" placeholder="Подтвердите пароль" required>
-	
-				<div class="clearfix">
-					<button type="button"  class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>
-					<button type="button" id="enterInAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Изменить</button>
-				</div> 
-			</div>
-		</form>
-	</div> 
+<!--				<label for="psw" class="form-label">Пароль</label>-->
+<!--				<input type="password" class="form-control" id="psw" placeholder="Пароль" required>-->
+<!--		-->
+<!--				<label for="psw-repeat" class="form-label">Подтвердите пароль</label>-->
+<!--				<input type="password" style="margin-bottom: 70px;"  class="form-control" id="psw-reset" placeholder="Подтвердите пароль" required>-->
+<!--	-->
+<!--				<div class="clearfix">-->
+<!--					<button type="button"  class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>-->
+<!--					<button type="button" id="enterInAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Изменить</button>-->
+<!--				</div> -->
+<!--			</div>-->
+<!--		</form>-->
+<!--	</div> -->
 	<script src="{% static 'js/script_profile.js' %}"></script>
 </body>
 </html>

@@ -597,3 +597,14 @@ h1 {
   content: "";
   top: 8px;
 }
+.list__label {
+	margin-left: 11%;
+	margin-bottom: 10px;
+}
+
+
+.list__input {
+	width: 80%;
+	margin: 0 auto;
+	margin-bottom: 15px;
+}

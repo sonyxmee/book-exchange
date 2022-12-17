@@ -168,7 +168,7 @@ class UpdatePublicDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
 class UpdateUserDetails(LoginRequiredMixin, SuccessMessageMixin, UpdateView):
     login_url = "upd_user"
     form_class = UpdateUserForm
-    template_name = "shop/edit_user.html"
+    template_name = "shop/edit_info_1.html"
     success_url = reverse_lazy('home')
     success_message = "User updated"
 
@@ -249,20 +249,21 @@ class ForgotPasswordView(SuccessMessageMixin, PasswordResetView):
     success_url = reverse_lazy('home')
 
 
-def forgot_passw(request):
-    if request.method == 'POST':
-        form = ForgotPasswForm(request.POST)
-        if form.is_valid():
-            mail = send_mail('Восстановление пароля', 'MESSAGE', 'forpython024@gmail.com', [form.cleaned_data['email']],
-                             fail_silently=False)
-            if mail:
-                messages.success(request, 'Письмо отправлено Вам на почту!')
-                return redirect('')
-            else:
-                messages.error(request, 'Ошибка отправки письма на почту!')
-    else:
-        form = ForgotPasswForm()
-    return render(request, 'shop/password_reset.html')
+# def forgot_passw(request):
+#     if request.method == 'POST':
+#         form = ForgotPasswForm(request.POST)
+#         if form.is_valid():
+#             # mail = send_mail('Восстановление пароля', 'MESSAGE', 'forpython024@gmail.com', [form.cleaned_data['email']],
+#             #                  fail_silently=False)
+#             # if mail:
+#             #     messages.success(request, 'Письмо отправлено Вам на почту!')
+#             #     return redirect('')
+#             # else:
+#             #     messages.error(request, 'Ошибка отправки письма на почту!')
+#             return redirect('')
+#     else:
+#         form = ForgotPasswForm()
+#     return render(request, 'shop/password_reset.html')
 
 
 # @login_required
