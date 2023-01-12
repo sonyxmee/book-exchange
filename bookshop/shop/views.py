@@ -23,7 +23,6 @@ def main(request):
     return render(request, 'shop/main_without_auth.html')  # 'shop/main_with_auth.html'
 
 
-
 @login_required
 def home(request):
     return render(request, 'shop/main_with_auth.html')
@@ -198,12 +197,12 @@ class Profile(LoginRequiredMixin, View):
     template_name = "shop/pr.html"
 
     def get(self, request, ):
-        flag=False
+        flag = False
         user_profile_data = Client.objects.get(user=request.user.id)
         book_data = Book.objects.filter(client__user=self.request.user)
-        print(book_data)
+        print(list(book_data))
         if not book_data:
-            flag=True
+            flag = True
         context = {
             'user_profile_data': user_profile_data,
             'book_data': book_data,
@@ -247,7 +246,6 @@ class ForgotPasswordView(SuccessMessageMixin, PasswordResetView):
                       " если Вы не получили письмо, " \
                       "проверьте папку Спам и корректность введенного адреса почты."
     success_url = reverse_lazy('home')
-
 
 # def forgot_passw(request):
 #     if request.method == 'POST':

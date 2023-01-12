@@ -23,7 +23,7 @@ class Book(models.Model):
     author = models.CharField(max_length=100, verbose_name='автор')
     genre = models.CharField(max_length=20, verbose_name='жанр')
     # file will be uploaded to MEDIA_ROOT / uploads
-    image = models.ImageField(upload_to ='uploads/', blank=True, null=True)
+    # image = models.ImageField(upload_to ='uploads/', blank=True, null=True)
     client = models.ForeignKey(Client, related_name='books', on_delete=models.CASCADE, verbose_name='пользователь')
     def __str__(self):
         return f"книга: {self.title}, автор: {self.author}"
