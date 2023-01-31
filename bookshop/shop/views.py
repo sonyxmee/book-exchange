@@ -1,7 +1,5 @@
 from django.contrib.auth import login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.core.mail import send_mail
-from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse_lazy, reverse
@@ -11,12 +9,8 @@ from django.contrib.messages.views import SuccessMessageMixin
 from django.views import View
 from django.views.generic import CreateView, ListView, UpdateView
 
-from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, PasswordChangingForm, \
-    ForgotPasswForm
-from .utils import DataMixin
+from .forms import RegisterForm, LoginForm, UpdateUserForm, UpdateProfileForm, AddBookForm, PasswordChangingForm
 from .models import Book, Client
-
-from django.utils.datastructures import MultiValueDictKeyError
 
 
 def main(request):
