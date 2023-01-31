@@ -1,0 +1,5 @@
+*.sqlite3
+shop/__pycache__/*
+shop/migrations/*
+../.idea/
+bookshop/__pycache__/*

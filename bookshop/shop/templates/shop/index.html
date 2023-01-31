@@ -1,0 +1,206 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<link rel="stylesheet" href="{% static 'css/styleReg.css' %}">
+	<title>Главная страница без входа </title>
+</head>
+
+<body>
+<!-- Навигация -->
+<nav class="navbar navbar-expand-lg bg-while">
+  <div class="container">
+    <a class="navbar-brand" href="#"><img src="{% static 'img/Логотип.png' %}" alt="logo"></a>
+		<form class="d-flex" >
+			<input type="search" class="input-nav" placeholder="Введите название книги или автора">
+			<!-- <input class="input-nav" type="search" placeholder="Введите название книги или автора" > -->
+			<button class="btn_search" type="submit"><img  class="btn_search-img" src="{% static 'icons/Search.png' %}" alt="поиск"></button>
+		</form>
+		<button class="btn btn-outline-success" id="toComeInAccount" data-toggle="modal" onclick="document.getElementById('loginform').style.display='block'">Войти</button>
+		<!-- <a class="btn__log-in"onclick="document.getElementById('id02').style.display='block'" href="#">Войти</a> -->
+  </div>
+</nav>
+<hr>
+<div class="container">
+	<section class="block-1">
+		<img class="img-block-1" src="{% static 'img/Creative arrangement with different books.png' %}" alt="">
+		<div class="title-subtitle-btn">
+			<h1 class="title">Добро пожаловать!</h1>
+			<p class="subtitle">здесь обитают книголюбы. <!-- <br> Читайте, общайтесь, ищите, обменивайтесь. --></p>
+			<button class="norm-btn" id="accountRegistration" data-toggle="modalRegistration" onclick="document.getElementById('registerform').style.display='block'" >Стать участником</button>
+		</div>
+	</section>
+
+	<section class="block-2">
+		
+		<div class="block-2__icons-item icons-item">
+			<img class="icons-item__icons" src="{% static 'img/free-animated-icon-diagram-7211795.png' %}" alt="">
+			<p class="icons-item__text" >Социологический Эко - проект.</p>
+		</div>
+
+		<div class="block-2__icons-item icons-item">
+			<img class="icons-item__icons" src="{% static 'img/free-animated-icon-handshake-6416336.png' %}" alt="">
+			<p class="icons-item__text" >Любить - это значит уметь отпускать...</p>
+		</div>
+
+		<div class="block-2__icons-item icons-item">
+			<img class="icons-item__icons" src="{% static 'img/free-animated-icon-location-6844372.png' %}" alt="">
+			<p class="icons-item__text" >Находить книги, делиться книгами, знакомиться с книголюбами. Легко! </p>
+		</div>
+	</section>
+
+	<section class="block-3">
+		<h2>Что такое обмен книг...</h2>
+		<p>Процесс буккроссинга состоит из простейшего действия, основанного на принципе «прочитал — 
+			отдай другому».  <br> Участники движения оставляют свои книги на улице, в метро, кафе и ресторанах, да и 
+			просто в любых общественных местах, чтобы любой желающий мог 
+			их прочитать. <br>
+			<br>
+			Как это работает?
+			<br>
+			</p>
+			<ul>
+				<li>Авторизитуйтесь на нашем сайте</li>
+				<li>Зарегистрируйте книгу в личном кабинете</li>
+				<li>Обменивайтесь книгами в другими пользователями</li>
+				<li>Оставляйте отзывы к прочитанным книгам</li>
+				<li>Следите за путешествием книги по миру</li>
+			</ul>
+	</section>
+
+</div>
+
+<!-- всплывающей окно для регистрации -->
+ <div id="registerform" class="modal">
+	<span onclick="document.getElementById('registerform').style.display='none'" class="close" title="Close Modal">&times;</span>
+<!--	 {% url 'home' %}-->
+	<form class="modal-content" action="{% url 'register' %}" method="POST">
+		<div class="container">
+			<h1 style="text-align: center;">Регистрация</h1>
+			<p style="text-align: center; font-weight: 300;">Для создания учётной записи необходимо ввести корректные данные.</p>
+			<hr>
+			{% csrf_token %}
+			{% if form.errors %}
+				<div class="alert alert-danger alert-dismissible" role="alert">
+					<div id="form_errors">
+						{% for key, value in form.errors.items %}
+							<strong>{{ value }}</strong>
+						{% endfor %}
+					</div>
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			{% endif %}
+			<label for="first-name" class="form-label">Имя</label>
+<!--			<input type="text" class="form-control " id="first-name" placeholder="Имя" required>-->
+			{{ registerform.first_name }}
+
+			<label for="second-name" class="form-label">Фамилия</label>
+<!--			<input type="text" class="form-control" id="second-name" placeholder="Фамилия" required>-->
+			{{ registerform.last_name }}
+
+			<label for="username" class="form-label">Ник</label>
+<!--			<input type="text" class="form-control" id="username" placeholder="Ник" required>-->
+			{{ registerform.username }}
+
+			<label for="email" class="form-label">Email</label>
+<!--			<input type="text" class="form-control" id="email" aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback"  placeholder="Email" required>-->
+			{{ registerform.email }}
+
+			<label for="psw" class="form-label">Пароль</label>
+<!--			<input type="password" class="form-control" id="psw" placeholder="Пароль" required>-->
+			{{ registerform.password1 }}
+
+			<label for="psw-repeat" class="form-label">Повторить пароль</label>
+<!--			<input type="password" class="form-control" id="psw-reset" placeholder="Ещё раз пароль" required>-->
+			{{ registerform.password2 }}
+			
+			<div class="clearfix">
+				<button type="button"  class="btn btn-outline-danger clear  btn-style">Отмена</button>
+				<button type="submit" id="enterInAccount" class="btn btn-outline-success btn-style">Зарегистрироваться</button>
+			</div> 
+		</div>
+	</form>
+</div> 
+
+
+<!-- всплывающей окно для входа в аккаунт -->
+<div id="loginform" class="modal">
+	<span onclick="document.getElementById('loginform').style.display='none'" class="close" title="Close Modal">&times;</span>
+<!--	action="{% url 'login' %}"-->
+	{% if form.errors %}
+		<div class="alert alert-danger alert-dismissible" role="alert">
+			<div id="form_errors">
+				{% for key, value in form.errors.items %}
+					<strong>{{ value }}</strong>
+				{% endfor %}
+			</div>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+	{% endif %}
+	<form class="modal-content" action="{% url 'login' %}" method="POST">
+		<div class="container">
+			<h1 style="text-align: center;">Авторизация</h1>
+			<p style="text-align: center; font-weight: 300;">Для того, чтобы войти в аккаунт необходимо ввести корректные данные.</p>
+			<hr>
+			{% csrf_token %}
+
+			<label for="username" class="form-label">Ник</label>
+<!--			<input type="text" class="form-control" id="username" placeholder="Ник" required>-->
+			{{ loginform.username }}
+
+			<label for="psw" class="form-label">Пароль</label>
+<!--			<input  type="password" class="form-control" id="psw" placeholder="Пароль" required>-->
+			{{ loginform.password }}
+
+<!--			<a class="forgot-your-password" id="forgotYourPassword" style="color: black;" onclick="document.getElementById('id03').style.display='block'" >Забыли пароль</a>-->
+			<p class="forgot-registration">Если Вы еще не зарегистрированы <a id="forgotRegistration" onclick="document.getElementById('registerform').style.display='block'" style="color:#098207">Нажмите сюда</a></p>
+
+			<div class="clearfix">
+				<button type="button" class="btn btn-outline-danger clear btn-style">Отмена</button>
+				<button type="submit" id="enterInAccount1" class="btn btn-outline-success btn-style">Войти в аккаунт</button>
+			</div> 
+		</div>
+	</form>
+</div> 
+
+
+<!-- Всплывающее окно забыл пароль -->
+<div id="id03" class="modal">
+	<span onclick="document.getElementById('id03').style.display='none'" class="close" title="Close Modal">&times;</span>
+	<form class="modal-content">
+		<div class="container">
+			<h1 style="text-align: center;">Восстановление пароля</h1>
+			<p style="text-align: center; font-weight: 300;">Для того, чтобы восстановать аккаунт необходимо ввести корректные данные.</p>
+			<hr>
+			
+			<label for="email" class="form-label">Email</label>
+			<input style="margin-bottom: 70px;" type="text" class="form-control" id="email" aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback"  placeholder="Email" required>
+			<div class="clearfix">
+				<button type="button" class="btn btn-outline-danger clear  btn-style">Отмена</button>
+				<button type="button" id="recoverAccount" class="btn btn-outline-success btn-style">Восстановать пароль </button>
+			</div> 
+		</div>
+	</form>
+</div> 
+
+
+<script src="{% static 'js/script.js' %}"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+   -->
+</body>
+</html>
+
+
+

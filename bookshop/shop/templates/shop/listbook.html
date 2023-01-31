@@ -1,0 +1,14 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}ListBook Page{% endblock title %}
+{% block content %}
+    <div class="container">
+        <h1>{{title}}</h1>
+        <ul>
+        {% for pr in prod %}
+            <li>{{pr.title}} <a href="{% url 'delete-book' pr.id%}" class="btn btn-outline-danger btn-sm">x</a> </li>
+        {% endfor %}
+        </ul>
+    </div>
+
+{% endblock %}

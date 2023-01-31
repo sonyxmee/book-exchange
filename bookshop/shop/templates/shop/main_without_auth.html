@@ -1,0 +1,212 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@200;300;400;500;600&display=swap" rel="stylesheet"> 
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+
+<title>Главная страница без входа </title>
+</head>
+
+<body>
+<!-- Навигация -->
+<!--<script>console.log("{% static 'css/style.css' %}")</script>-->
+<nav style="background-color: while;" class="navbar">
+	<div class="container">
+		<a class="navbar__logo" href="#"><img src="{% static 'img/Логотип.png' %}" alt="logo"></a>
+		<div class="navbar__search">
+			<form class="navbar__form form" method=POST action="{% url 'search-books' %}">
+				{% csrf_token %}
+				<input class="form__input" type="text" placeholder="Введите название книги..." name="searched">
+				<button class="form__btn" type="submit">
+					<img class="form__img" src="{% static 'icons/icons8-поиск-24.svg' %}" alt="icons">
+				</button>
+			</form>
+		</div>
+		<button class="btn btn-outline-success  modal__btn regist" id="toComeInAccount" data-toggle="modal" onclick="document.getElementById('loginform').style.display='block'; document.body.style.overflow = 'hidden'">Войти</button>
+		<!-- <div class="menu">
+			<input id="menu__toggle" type="checkbox">
+			<label class="menu__btn" for="menu__toggle">
+				<span></span>
+			</label>
+			<ul class="menu__box">
+				<li><a class="menu__item" href="#">Главная страница</a></li>
+				<li><a class="menu__item" href="#">Профиль</a></li>
+				<li><a class="menu__item" href="#">Добавить книгу</a></li>
+				<li><a class="menu__item" href="#">Найти книгу</a></li>
+				<li><a class="menu__item" href="#">Выйти</a></li>
+			</ul>
+		</div> -->
+	</div>
+</nav>
+<hr class="reg">
+<main class="main">
+	<div class="container main-section">
+		<section class="block-1">
+			<img class="img-block-1" src="{% static 'img/Creative arrangement with different books.png' %}" alt="">
+			<div class="title-subtitle-btn">
+				<h1 class="title">Добро пожаловать!</h1>
+				<p class="subtitle">здесь обитают книголюбы. <!-- <br> Читайте, общайтесь, ищите, обменивайтесь. --></p>
+				<button class="main__btn btn btn-outline-success" id="accountRegistration" data-toggle="modalRegistration" onclick="document.getElementById('registerform').style.display='block'; document.body.style.overflow = 'hidden'" >Стать участником</button>
+			</div>
+		</section>
+		<section class="block-3" style="padding: 0 100px;">
+			<h2>Что такое обмен книг...</h2>
+			<div class="about">
+				<p>Процесс буккроссинга состоит из простейшего действия, основанного на принципе «прочитал — 
+					отдай другому».  <br> Участники движения оставляют свои книги на улице, в метро, кафе и ресторанах, да и 
+					просто в любых общественных местах, чтобы любой желающий мог 
+					их прочитать. <br>
+					<br>
+					Как это работает?
+					<br>
+					</p>
+					<ul>
+						<li>Авторизитуйтесь на нашем сайте</li>
+						<li>Зарегистрируйте книгу в личном кабинете</li>
+						<li>Обменивайтесь книгами в другими пользователями</li>
+						<li>Оставляйте отзывы к прочитанным книгам</li>
+						<li>Следите за путешествием книги по миру</li>
+					</ul>
+			</div>
+			
+		</section>
+	</div>
+</main>
+
+
+<!-- всплывающей окно для регистрации -->
+ <div id="registerform" class="modal">
+	<form class="modal-content" action="{% url 'register' %}" method="POST">
+		<div class="container">
+			<div data-close class="modal__close">&times;</div>
+			<h1 style="text-align: center;">Регистрация</h1>
+			<p style="text-align: center; font-weight: 300;">Для создания учётной записи необходимо ввести корректные данные.</p>
+			<hr class="modal__hr">
+			{% csrf_token %}
+
+			{% if registerform.errors %}
+				<div class="alert alert-danger alert-dismissible" role="alert">
+					<div id="form_errors">
+						{% for key, value in registerform.errors.items %}
+							<strong>{{ value }}</strong>
+						{% endfor %}
+					</div>
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			{% endif %}
+
+			<label for="first-name" class="form-label">Имя</label>
+<!--			<input type="text" class="form-control " id="first-name" placeholder="Имя" required>-->
+			{{ registerform.first_name }}
+		
+			<label for="second-name" class="form-label">Фамилия</label>
+<!--			<input type="text" class="form-control" id="second-name" placeholder="Фамилия" required>-->
+			{{ registerform.last_name }}
+
+			<label for="username" class="form-label">Ник</label>
+<!--			<input type="text" class="form-control" id="username" placeholder="Ник" required>-->
+			{{ registerform.username }}
+
+			<label for="email" class="form-label">Email</label>
+<!--			<input type="text" class="form-control" id="email" aria-describedby="inputGroupPrepend3 validationServerUsernameFeedback"  placeholder="Email" required>-->
+			{{ registerform.email }}
+
+			<label for="psw" class="form-label">Пароль</label>
+<!--			<input type="password" class="form-control" id="psw" placeholder="Пароль" required>-->
+			{{ registerform.password1 }}
+
+			<label for="psw-repeat" class="form-label">Повторить пароль</label>
+<!--			<input type="password" style="margin-bottom: 70px;"  class="form-control" id="psw-repeat" placeholder="Ещё раз пароль" required>-->
+			{{ registerform.password2 }}
+
+			
+			<div class="clearfix">
+				<button type="button"  class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>
+				<button type="submit" id="enterInAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Зарегистрироваться</button>
+			</div> 
+		</div>
+	</form>
+</div> 
+
+
+<div id="loginform" class="modal">
+	<form class="modal-content" action="{% url 'login' %}" method="POST">
+		<div class="container">
+			<div data-close class="modal__close">&times;</div>
+			<h1 style="text-align: center; margin: 40px 0 24px 0 ;  ">Авторизация</h1>
+			<p style="text-align: center; font-weight: 300;">Для того, чтобы войти в аккаунт необходимо ввести корректные данные.</p>
+			<hr class="modal__hr">
+			{% csrf_token %}
+
+			{% if loginform.errors %}
+				<div class="alert alert-danger alert-dismissible" role="alert">
+					<div id="form_errors">
+						{% for key, value in loginform.errors.items %}
+							<strong>{{ value }}</strong>
+						{% endfor %}
+					</div>
+					<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+			{% endif %}
+
+			<label for="username" class="form-label">Ник</label>
+<!--			<input type="text" class="form-control" id="username" placeholder="Ник" required>-->
+			{{ loginform.username }}
+
+			<label for="psw" class="form-label">Пароль</label>
+<!--			<input  type="password"  style="margin-bottom: 10px;" class="form-control" id="psw" placeholder="Пароль" required>-->
+			{{ loginform.password }}
+
+<!--			<a class="forgot-your-password" id="forgotYourPassword" style="color: black;" onclick="document.getElementById('id03').style.display='block'; document.body.style.overflow = 'hidden'" >Забыли пароль</a>-->
+			<p class="forgot-registration"  style="margin-bottom: 70px;" >Если Вы еще не зарегистрированы <a id="forgotRegistration" onclick="document.getElementById('registerform').style.display='block'; document.body.style.overflow = 'hidden'" style="color:#098207">Нажмите сюда</a></p>
+
+			<div class="clearfix">
+				<button type="button" class="btn btn-outline-danger clear cncl-btn mod-btn"  onclick='document.body.style.overflow = "auto"'>Отмена</button>
+				<button type="submit" id="enterInAccount1" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Войти в аккаунт</button>
+			</div> 
+		</div>
+	</form>
+</div> 
+
+
+<!--&lt;!&ndash; Всплывающее окно забыл пароль &ndash;&gt;-->
+<!--<div id="id03" class="modal" >-->
+<!--	<form class="modal-content" action ="{% url 'main' %}" method="POST">-->
+<!--		<div class="container">-->
+<!--			{% csrf_token %}-->
+<!--			<div data-close class="modal__close">&times;</div>-->
+<!--			<h1 style="text-align: center;">Восстановление пароля</h1>-->
+<!--			<p style="text-align: center; font-weight: 300;">Для того, чтобы восстановать аккаунт необходимо ввести корректные данные.</p>-->
+<!--			<hr class="modal__hr">-->
+
+<!--			<label for="psw" class="form-label">Email</label>-->
+<!--			<input type="email" class="form-control" id="psw" placeholder="Email" required>-->
+
+
+<!--			<div class="clearfix">-->
+<!--				<button type="button" class="btn btn-outline-danger clear cncl-btn mod-btn"   onclick='document.body.style.overflow = "auto"'>Отмена</button>-->
+<!--				<button type="submit"   id="recoverAccount" class="btn btn-outline-success mod-btn"  onclick='document.body.style.overflow = "auto"'>Восстановать пароль </button>-->
+<!--			</div> -->
+<!--		</div>-->
+<!--	</form>-->
+<!--</div> -->
+
+
+<script src="{% static 'js/script.js' %}"></script>
+</body>
+</html>
+
+
+

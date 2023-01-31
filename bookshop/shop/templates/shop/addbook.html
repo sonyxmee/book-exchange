@@ -1,0 +1,18 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}AddBook Page{% endblock title %}
+{% block content %}
+<div class="container">
+	<form action ="{% url 'addbook' %}" method="POST" role="form" class="form-horizontal">
+        {% csrf_token %}
+		<div class="form-group">
+			<label for="email" class="control-label col-md-2">Добавление товара</label>
+			<div>{{form.non_field_errors}}</div>
+			<div class="col-md-10">
+				{{ form.as_p }}
+			</div>
+		</div>
+		<button class="btn btn-success"> Добавить </button>
+	</form>
+</div>
+{% endblock %}
